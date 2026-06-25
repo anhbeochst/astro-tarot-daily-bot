@@ -13,9 +13,9 @@ from src.discord_embed import send_daily_report
 
 
 def main():
-    webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
+    webhook_url = os.environ.get("DISCORD_WEBHOOK_LUNAR") or os.environ.get("DISCORD_WEBHOOK_URL")
     if not webhook_url:
-        print("ERROR: DISCORD_WEBHOOK_URL not set")
+        print("ERROR: DISCORD_WEBHOOK_URL / DISCORD_WEBHOOK_LUNAR not set")
         sys.exit(1)
 
     print("[1/4] Fetching tarot data...")
