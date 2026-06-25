@@ -18,9 +18,9 @@ for f in __import__('glob').glob('src/*.py'):
 echo '✓ verify.sh: syntax OK'
 
 # Test tarot fetch + astrology (without webhook)
-python3 -c "
+python3 << 'PYEOF'
 from src.tarot_data import fetch_tarot_cards, pick_card_of_the_day
-from src.astrology import create_subject, create_transit_subject, get_natal_summary, get_transit_aspects
+from src.astrology import create_subject, create_transit_subject, get_natal_interpretation, get_transit_interpretation
 
 cards = fetch_tarot_cards()
 assert len(cards) == 78, f'Expected 78 cards, got {len(cards)}'
@@ -31,11 +31,14 @@ nam = create_subject('Nam', 1996, 1, 1, 0, 30)
 nu = create_subject('Nu', 1996, 3, 28, 10, 0)
 transit = create_transit_subject()
 
-nam_t = get_transit_aspects(nam, transit)
-nu_t = get_transit_aspects(nu, transit)
-assert isinstance(nam_t, str) and len(nam_t) > 0
-assert isinstance(nu_t, str) and len(nu_t) > 0
+nam_t = get_transit_interpretation(nam, transit)
+nu_t = get_transit_interpretation(nu, transit)
+assert isinstance(nam_t, dict) and len(nam_t.get("aspects", "")) > 0
+assert isinstance(nu_t, dict) and len(nu_t.get("aspects", "")) > 0
+
+n_natal = get_natal_interpretation(nam)
+assert isinstance(n_natal, dict) and len(n_natal.get("positions", "")) > 0
 
 print('✓ verify.sh: integration OK')
-"
+PYEOF
 echo '✓ All checks passed'

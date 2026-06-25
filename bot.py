@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from src.tarot_data import fetch_tarot_cards, pick_card_of_the_day
 from src.astrology import (
     create_subject, create_transit_subject,
-    get_natal_summary, get_transit_aspects,
+    get_natal_interpretation, get_transit_interpretation,
 )
 from src.discord_embed import send_daily_report
 
@@ -28,18 +28,17 @@ def main():
     nu = create_subject("Nu", 1996, 3, 28, 10, 0)
     print("  → Natal charts done")
 
-    print("[3/4] Calculating today's transits...")
+    print("[3/4] Calculating today's transits & interpretations...")
     transit = create_transit_subject()
-    nam_natal = get_natal_summary(nam)
-    nu_natal = get_natal_summary(nu)
-    nam_transit = get_transit_aspects(nam, transit)
-    nu_transit = get_transit_aspects(nu, transit)
-    print("  → Transits done")
+    nam_natal = get_natal_interpretation(nam)
+    nu_natal = get_natal_interpretation(nu)
+    nam_transit = get_transit_interpretation(nam, transit)
+    nu_transit = get_transit_interpretation(nu, transit)
+    print("  → Done")
 
     print("[4/4] Sending Discord report...")
     send_daily_report(
-        webhook_url,
-        card,
+        webhook_url, card,
         {"natal": nam_natal, "transit": nam_transit},
         {"natal": nu_natal, "transit": nu_transit},
     )
